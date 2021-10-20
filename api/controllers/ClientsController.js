@@ -1,6 +1,12 @@
+
 const ClientsService = require('../services/ClientsService')
 
 class ClientsController {
+    /**
+     * pega todos os clientes pelo ClientsService
+     * @param {*} req 
+     * @param {*} res 
+     */
     static async getAllclients(req, res) {
         try {
             const clients = await ClientsService.findAllClients()
