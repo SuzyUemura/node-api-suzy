@@ -21,7 +21,7 @@ app.get('/', (req : Request, res : Response) => {
         message: 'API está funcionando.'
     })
 })
-
+ 
 mongoose.connect(mongodb, (err) => {
     if(err) {
         console.log('MongoDB: Falha na conexão', err)

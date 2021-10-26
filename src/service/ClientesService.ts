@@ -40,6 +40,10 @@ class ClientesService {
         })
         await cliente.save()
     }
+
+    static async todosClientes() {
+        
+    }
 }
 
 export default ClientesService
