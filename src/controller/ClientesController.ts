@@ -16,6 +16,15 @@ class ClientesController {
             res.status(404).json({message: err})
         }
     }
+
+    static async getClients(req: Request, res: Response) {
+        try {
+            const clientes = ClientesService.todosClientes()
+            res.status(200).json(clientes)
+        } catch (err) {
+            res.status(404).json({message: err})
+        }
+    }
 }
 
 export default ClientesController
