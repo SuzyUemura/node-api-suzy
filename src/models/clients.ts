@@ -13,13 +13,15 @@ const clientesDoc= new mongoose.Schema({
         type: Boolean,
         required: true, default: true
     },
-    endereco: [{
+    enderecos: [{
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'endereco'
+        ref: 'Addresses'
     }],
     contatos: [{
-        type: [String]
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'Phones'
     }]
 })
 

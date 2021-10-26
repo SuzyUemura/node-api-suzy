@@ -4,11 +4,17 @@ import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
+import routes from '../src/routes'
+import morgan from 'morgan'
 
 dotenv.config()
 const app = express()
 const port = process.env.PORT
+const mongodb = process.env.MONGO_DB || ''
+
+app.use(morgan('dev'))
 app.use(express.json(), cors ())
+app.use(routes)
 
 app.get('/', (req : Request, res : Response) => {
     res.status(200).json({
@@ -16,7 +22,7 @@ app.get('/', (req : Request, res : Response) => {
     })
 })
 
-mongoose.connect("mongodb+srv://admin:admin@nodedb.g6rw3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", (err : Error) => {
+mongoose.connect(mongodb, (err) => {
     if(err) {
         console.log('MongoDB: Falha na conexão', err)
     } else {
