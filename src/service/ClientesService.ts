@@ -1,37 +1,21 @@
 import Clients from '../models/clients'
 import Phones from '../models/phones'
 import Anddresses from '../models/anddresses'
-import mongoose from 'mongoose'
+import mongoose, { AnyObject } from 'mongoose'
 class ClientesService {
-    static async criarCliente(dadosCliente : any) {
+     async criarCliente(dadosCliente : AnyObject) {
         const session = await mongoose.startSession()
+        session.startTransaction()
         try {
             const {cliente_nome, cliente_nasc, is_active, enderecos, contatos} = dadosCliente
-            const enderecosAdicionados : any[] = []
-            const contatosAdicionados : any[] = []
-    
-            for(let i of dadosCliente.enderecos) {
-                const endereco = await Anddresses.create({
-                    rua: i.rua,
-                    numero: i.numero,
-                    complemento: i.complemento,
-                    bairro: i.bairro,
-                    cep: i.cep,
-                    cidade: i.cidade
-                })
-                await endereco.save()
-                enderecosAdicionados.push(endereco._id)
-            }
+          
+            console.log(dadosCliente)
+           
+                const listaEnderecos = await Anddresses.create(enderecos, {session: session})
+                const enderecosAdicionados = listaEnderecos.map(e => e._id)
             
-            for(let c of dadosCliente.contatos) {
-                const contato = await Phones.create({
-                    ddd: c.ddd,
-                    numero: c.numero,
-                    descricao: c.descricao
-                })
-                await contato.save()
-                contatosAdicionados.push(contato._id)
-            }
+                const listaContatos = await Phones.create(contatos, {session: session})
+                const contatosAdicionados = listaContatos.map(c => c._id)
     
             const cliente = await Clients.create({
                 cliente_nome,
@@ -40,15 +24,18 @@ class ClientesService {
                 enderecos: enderecosAdicionados,
                 contatos: contatosAdicionados
             })
-            await cliente.save()
+            await session.commitTransaction()
+            session.endSession()
             return cliente
             
         } catch (error) {
-            
+            await session.abortTransaction()
+            session.endSession()
+            console.log('Erro ao criar novo cliente')
         }
     }
 
-    static async todosClientes() {
+     async todosClientes() : Promise<any> {
         try {
             const clientes = await Clients.find().populate({ 
                 path: 'enderecos', 
@@ -63,12 +50,20 @@ class ClientesService {
         }
     }
 
-    static async buscarClienteId(idCliente : String) {
+     async buscarClienteId(idCliente : String) {
         try {
             const clienteEncontrado = await Clients.findById(idCliente)
             return clienteEncontrado
         } catch (error) {
-            console.log('Erro ao buscar clientes no banco de dados')
+            console.log('Erro ao buscar cliente no banco de dados')
+        }
+    }
+
+     async deletarCliente(idCliente: String) {
+        try {
+            await Clients.findByIdAndDelete(idCliente)
+        } catch (err) {
+            console.log('Erro ao excluir cliente')
         }
     }
 }
