@@ -3,7 +3,7 @@ import Phones from '../models/phones'
 import Anddresses from '../models/anddresses'
 import mongoose, { AnyObject } from 'mongoose'
 class ClientesService {
-     async criarCliente(dadosCliente : AnyObject) {
+     async criarCliente(dadosCliente : AnyObject) : Promise<any>  {
         const session = await mongoose.startSession()
         session.startTransaction()
         try {
@@ -50,7 +50,7 @@ class ClientesService {
         }
     }
 
-     async buscarClienteId(idCliente : String) {
+     async buscarClienteId(idCliente : String) : Promise<any>  {
         try {
             const clienteEncontrado = await Clients.findById(idCliente)
             return clienteEncontrado
@@ -59,11 +59,19 @@ class ClientesService {
         }
     }
 
-     async deletarCliente(idCliente: String) {
+     async deletarCliente(idCliente: String) : Promise<any>  {
         try {
             await Clients.findByIdAndDelete(idCliente)
         } catch (err) {
             console.log('Erro ao excluir cliente')
+        }
+    }
+
+    async atualizarCliente(idCliente: String, clienteEditado : AnyObject) : Promise<any>  {
+        try {
+            await Clients.findByIdAndUpdate(idCliente, clienteEditado)
+        } catch (err) {
+            console.log('Erro ao atualizar cliente')
         }
     }
 }
