@@ -7,4 +7,5 @@ router.post('/', controller.postClient)
 router.get('/', controller.getClients)
 router.get('/:id', controller.getOneClient)
 router.delete('/:id', controller.deleteClient)
+router.put('/:id', controller.putClient)
 export default router
