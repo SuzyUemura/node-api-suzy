@@ -5,7 +5,7 @@ const service = new ClientesService()
 class ClientesController {
     /**
      * a chamada para a criação de um novo cliente é feito pela service
-     * @param {*} req.boy dados onde o usuario solicita um novo cliente
+     * @param {*} req.body dados onde o usuario solicita um novo cliente
      * @param {*} res 
      */
       async postClient(req: Request, res: Response) {
@@ -40,6 +40,21 @@ class ClientesController {
             const idCliente = req.params.id
             const clienteEncontrado = await service.buscarClienteId(idCliente)
             res.status(200).json(clienteEncontrado)
+        } catch (err) {
+            res.status(404).json({message: err})
+        }
+    }
+
+    /**
+     * Função exclui o cliente a partir do id
+     * @param req.params.id
+     * @param res 
+     */
+    async deleteClient(req: Request, res: Response) {
+        try {
+            const idCliente = req.params.id
+            await service.deletarCliente(idCliente)
+            res.status(200).end()
         } catch (err) {
             res.status(404).json({message: err})
         }
